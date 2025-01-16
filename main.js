@@ -20,6 +20,8 @@ const main = async () => {
         log.info(`Starting Program for all accounts:`, tokens.length);
 
         const accountsProcessing = tokens.map(async (token, index) => {
+            const randomDelay = Math.floor(Math.random() * 5) + 1;
+            await delay(randomDelay);
             const proxy = proxies[index % proxies.length] || null;
             try {
                 const userData = await utils.getUserInfo(token, proxy);

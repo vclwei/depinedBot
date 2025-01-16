@@ -17,6 +17,15 @@ export async function saveToFile(filename, data) {
     }
 }
 
+export async function saveToFileFully(filename, data) {
+    try {
+        await fs.writeFile(filename, data, 'utf-8');
+        log.info(`Data saved to ${filename}`);
+    } catch (error) {
+        log.error(`Failed to save data to ${filename}: ${error.message}`);
+    }
+}
+
 // Read the file
 export async function readFile(pathFile) {
     try {

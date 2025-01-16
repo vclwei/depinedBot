@@ -32,7 +32,7 @@ export const getIp = async (proxy) => {
     log.info(`Getting IP from ${proxy}`);
     const agent = newAgent(proxy);
     log.info(JSON.stringify(agent, null, 2));
-    const response = await axios.get('http://ip-api.com/json/', {
+    const response = await axios.get('http://ip-api.com/line/', {
         httpsAgent: agent,
         httpAgent: agent
     });

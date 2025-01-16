@@ -11,7 +11,7 @@ import {
 } from './utils/api.js'
 
 // Read register info from register.csv [email,password,proxy]
-// Save result to fullinfo.txt [email,password,proxy,token]
+// Save result to full.csv [email,password,proxy,token]
 const main = async () => {
     log.info(banner);
 
@@ -34,7 +34,9 @@ const main = async () => {
                 if (loginResp?.data?.has_entered_referral_code) {
                     log.info(`Account ${email} already has a referral code`);
                     token = loginResp.data.token;
-                    await saveToFile("fullinfo.txt", `${email},${password},${proxy},${token}`);
+                    await saveToFile("tokens.txt", token);
+                    await saveToFile("proxy.txt", proxy);
+                    await saveToFile("full.csv", `${email},${password},${proxy},${token}`);
                     continue
                 }
 
@@ -60,9 +62,9 @@ const main = async () => {
                 const confirm = await confirmUserReff(token, reffCode);
                 if (confirm?.data?.token) {
                     log.info('Referral confirmed successfully');
-                    saveToFile("tokens.txt", confirm.data.token);
-                    saveToFile("proxy.txt", proxy);
-                    saveToFile("fullinfo.txt", `${email},${password},${proxy},${confirm.data.token}`)
+                    await saveToFile("tokens.txt", confirm.data.token);
+                    await saveToFile("proxy.txt", proxy);
+                    await saveToFile("full.csv", `${email},${password},${proxy},${confirm.data.token}`)
                     isEntered = true;
                 }
             }
