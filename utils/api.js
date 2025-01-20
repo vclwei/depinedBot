@@ -53,7 +53,7 @@ export const registerUser = async (email, password, proxy) => {
             httpsAgent: agent,
             httpAgent: agent
         });
-        log.info(JSON.stringify(response, null, 2));
+        log.info(JSON.stringify(response.data, null, 2));
         log.info('User registered successfully:', response.data.message);
         return response.data;
     } catch (error) {
@@ -200,6 +200,25 @@ export async function connect(token, proxy) {
         return response.data;
     } catch (error) {
         log.error(`Error when update connection: ${error.message}`);
+        return null;
+    }
+}
+
+export const getUserProfile = async (token, proxy) => {
+    const agent = newAgent(proxy);
+    try {
+        const response = await axios.get('https://api.depined.org/api/user/overview/profile', {
+            headers: {
+                ...headers,
+            'Authorization': 'Bearer ' + token
+            },
+            httpsAgent: agent,
+            httpAgent: agent
+        });
+
+        return response.data.data.profile;
+    } catch (error) {
+        log.error('Error fetching user info:', error.message || error);
         return null;
     }
 }

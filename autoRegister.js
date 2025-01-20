@@ -1,6 +1,5 @@
 import { saveToFile, delay, readFile, saveToFileFully } from './utils/helper.js';
 import log from './utils/logger.js'
-import Mailjs from '@cemalgnlts/mailjs';
 import banner from './utils/banner.js';
 
 import {
@@ -10,7 +9,6 @@ import {
     getUserRef,
     loginUser
 } from './utils/api.js'
-const mailjs = new Mailjs();
 
 const main = async () => {
     log.info(banner);
@@ -31,6 +29,11 @@ const main = async () => {
         let reffCode = reffResp?.data?.referral_code;
         while (reffCode) {
             log.info(`Found new active referral code: ${reffCode}`);
+            if (newAccounts.length === 0) {
+                log.info(`No more accounts to register`);
+                break;
+            }
+
             try {
                 let [email, password, proxy] = newAccounts[0].split(',');
                 let token = null;
@@ -42,6 +45,11 @@ const main = async () => {
                     if (loginResp?.data?.has_entered_referral_code) {
                         log.info(`Account ${email} already has a referral code`);
                         token = loginResp.data.token;
+
+                        log.info(`Trying to create profile for ${email}`);
+                        await createUserProfile(token, { step: 'username', username: email.split('@')[0] }, proxy);
+                        await createUserProfile(token, { step: 'description', description: "AI Startup" }, proxy);
+
                         await saveToFile("tokens.txt", token);
                         await saveToFile("proxy.txt", proxy);
                         await saveToFile("full.csv", `${email},${password},${proxy},${token}`);
@@ -57,10 +65,12 @@ const main = async () => {
                 }
                 else {
                     token = regResp.data.token;
-                    log.info(`Trying to create profile for ${email}`);
-                    await createUserProfile(token, { step: 'username', username: email.split('@')[0] }, proxy);
-                    await createUserProfile(token, { step: 'description', description: "AI Startup" }, proxy);
+                    
                 }
+
+                log.info(`Trying to create profile for ${email}`);
+                await createUserProfile(token, { step: 'username', username: email.split('@')[0] }, proxy);
+                await createUserProfile(token, { step: 'description', description: "AI Startup" }, proxy);
 
                 let confirmResp = await confirmUserReff(token, reffCode, proxy);
 

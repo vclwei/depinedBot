@@ -48,7 +48,8 @@
 -   ```bash
     npm run autoreg
     ```
-- accounts information saved at `accounts.txt` and tokens auto saved to `tokens.txt`
+- register new account in resgister.csv, format in register.csv `email,password,proxy`, result write to tokens.txt proxy.txt and full.csv
+
 ## ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 This project is licensed under the [MIT License](LICENSE).
