@@ -53,9 +53,9 @@ const main = async () => {
                         await saveToFile("tokens.txt", token);
                         await saveToFile("proxy.txt", proxy);
                         await saveToFile("full.csv", `${email},${password},${proxy},${token}`);
+                        newAccounts.shift();
                         continue
                     }
-    
                     log.info(`Account ${email} already registered but not has a referral code`);
                     token = loginResp.data.token;
                 }
@@ -65,7 +65,6 @@ const main = async () => {
                 }
                 else {
                     token = regResp.data.token;
-                    
                 }
 
                 log.info(`Trying to create profile for ${email}`);
